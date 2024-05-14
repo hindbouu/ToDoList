@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To-Do List</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #000;
+        margin: 0;
+        padding: 0;
+        color: #000;
+    }
+
+    #container {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #ff1493;
+    }
+
+    h2 {
+        color: #ff1493;
+    }
+
+    input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        color: #000;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button.addToDo {
+        background-color: #ffb6c1;
+    }
+
+    button.addToDo:hover {
+        background-color: #ff94a1;
+    }
+
+    button.clearList {
+        background-color: #ffb6c1;
+    }
+
+    button.clearList:hover {
+        background-color: #ff94a1;
+    }
+
+    ul {
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    li {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #000;
+    }
+
+    .completed {
+        text-decoration: line-through;
+        color: #ff1493;
+    }
+
+    .btn-group {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 20% auto;
+        padding: 20px;
+        border-radius: 5px;
+        width: 80%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 24px;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Add a new to-do...">
+    <button class="addToDo" onclick="addTask()">Add to-do item</button>
+    <h2>Tasks to Do</h2>
+    <ul id="taskList"></ul>
+    <h2>Completed Tasks</h2>
+    <ul id="completedTaskList"></ul>
+    <div class="btn-group">
+        <button class="clearList" onclick="clearList()">Clear list</button>
+    </div>
+</div>
+
+<div id="clearListModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('clearListModal')">&times;</span>
+        <h2 style="color: #ff1493;">Clear To-Do or Completed list</h2>
+        <button class="addToDo" onclick="clearListOption(true)">Clear To-Do</button>
+        <button class="addToDo" onclick="clearListOption(false)">Clear Completed</button>
+        <button class="addToDo" onclick="closeModal('clearListModal')">Close</button>
+    </div>
+</div>
+
+<script>
+    let tasks = [];
+    let completedTasks = [];
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+    function addTask() {
+        const taskNameInput = document.getElementById("taskInput");
+        const task = taskNameInput.value.trim();
+        if (task !== "") {
+            tasks.push({ task: task, completed: false });
+            taskNameInput.value = "";
+            renderTasks();
+        }
+    }
+
+    function renderTasks() {
+        const taskList = document.getElementById("taskList");
+        const completedTaskList = document.getElementById("completedTaskList");
+        taskList.innerHTML = "";
+        completedTaskList.innerHTML = "";
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+            li.textContent = task.task;
+            li.addEventListener("click", () => {
+                toggleTask(index);
+            });
+            taskList.appendChild(li);
+        });
+        completedTasks.forEach((task) => {
+            const li = document.createElement("li");
+            li.textContent = task.task;
+            li.classList.add("completed");
+            completedTaskList.appendChild(li);
+        });
+    }
+
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        if (tasks[index].completed) {
+            completedTasks.push(tasks[index]);
+            tasks.splice(index, 1);
+        }
+        renderTasks();
+    }
+
+    function clearList() {
+        openModal('clearListModal');
+    }
+
+    function clearListOption(isClearToDo) {
+        if (isClearToDo) {
+            tasks = [];
+        } else {
+            completedTasks = [];
+        }
+        renderTasks();
+        closeModal('clearListModal');
+    }
+</script>
+</body>
+</html>
