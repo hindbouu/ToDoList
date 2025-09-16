@@ -2,7 +2,7 @@
 
 A simple, responsive to-do list web app built with HTML, CSS, and JavaScript.  
 This project allows users to create, track, and manage tasks with a clean interface.  
-  ![To-Do List Screenshot](screenshot.png)
+  ![To-Do List Screenshot](gallery/screenshot.png)
 
 
 
